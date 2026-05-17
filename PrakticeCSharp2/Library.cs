@@ -20,10 +20,10 @@ namespace PrakticeCSharp2
         public void Add(T item)
         {
             if (item == null)
-                Console.WriteLine("Медиа не может быть null");
+                throw new ArgumentNullException(nameof(item), "Медиа не может быть null");
 
             if (_mediaDict.ContainsKey(item.Title))
-                Console.WriteLine("Медиа с таким названием уже существует");
+                throw new InvalidOperationException($"Медиа с названием '{item.Title}' уже существует");
 
             _mediaList.Add(item);
             _mediaDict.Add(item.Title, item);
@@ -33,10 +33,10 @@ namespace PrakticeCSharp2
         public bool Remove(string title)
         {
             if (string.IsNullOrWhiteSpace(title))
-                Console.WriteLine("Название не может быть пустым");
+                throw new ArgumentException("Название не может быть пустым", nameof(title));
 
             if (!_mediaDict.ContainsKey(title))
-                Console.WriteLine("Медиа с таким названием не найдено");
+                throw new KeyNotFoundException($"Медиа с названием '{title}' не найдено");
 
             T item = _mediaDict[title];
             _mediaList.Remove(item);
@@ -47,10 +47,11 @@ namespace PrakticeCSharp2
         public T FindByTitle(string title)
         {
             if (string.IsNullOrWhiteSpace(title))
-                Console.WriteLine("Название не может быть пустым");
+                throw new ArgumentException("Название не может быть пустым", nameof(title));
+
 
             if (!_mediaDict.TryGetValue(title, out T item))
-                Console.WriteLine("Медиа с таким названием не найдено");
+                throw new KeyNotFoundException($"Медиа с названием '{title}' не найдено");
 
             return item;
         }
@@ -69,7 +70,7 @@ namespace PrakticeCSharp2
         {
             T item = FindByTitle(title);
             if (!item.IsAvailable)
-                Console.WriteLine("Медиа уже выдано");
+                throw new InvalidOperationException($"Медиа '{title}' уже выдано");
 
             item.IsAvailable = false;
             Console.WriteLine($"Выдано: {title}");
@@ -80,7 +81,7 @@ namespace PrakticeCSharp2
         {
             T item = FindByTitle(title);
             if (item.IsAvailable)
-                Console.WriteLine("Медиа уже доступно");
+                throw new InvalidOperationException($"Медиа '{title}' и так доступно");
 
             item.IsAvailable = true;
             Console.WriteLine($"Возвращено: {title}");

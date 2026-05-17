@@ -4,7 +4,15 @@
     {
         static void Main(string[] args)
         {
-            Tasker.Task1();
+            try
+            {
+                Tasker.Task1();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}, исключение обработано");
+            }
+            
         }
     }
 }
