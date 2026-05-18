@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PrakticeCSharp2
 {
@@ -40,6 +42,9 @@ namespace PrakticeCSharp2
                     case "5":
                         ShowStatistics();
                         break;
+                    case "6":
+                        ExportData();
+                        break;
                     case "0":
                         exit = true;
                         break;
@@ -62,6 +67,7 @@ namespace PrakticeCSharp2
             Console.WriteLine("3. Управление музыкальными альбомами");
             Console.WriteLine("4. Поиск по всем медиа");
             Console.WriteLine("5. Статистика");
+            Console.WriteLine("6. Экспорт в файл");
             Console.WriteLine("0. Выход");
             Console.Write("\nВыберите действие: ");
         }
@@ -507,7 +513,7 @@ namespace PrakticeCSharp2
             found = true;
 
             if (!found)
-                Console.WriteLine($"❌ Медиа с названием '{title}' не найдено ни в одной категории");
+                Console.WriteLine($"Медиа с названием '{title}' не найдено ни в одной категории");
         }
 
         public static void ShowStatistics()
@@ -544,6 +550,8 @@ namespace PrakticeCSharp2
             Console.WriteLine($"Выдано: {bookLibrary.GetUnavailableItems().Count() + movieLibrary.GetUnavailableItems().Count() + musicLibrary.GetUnavailableItems().Count()}");
         }
 
+
+
         static void InitializeTestData()
         {
             bookLibrary.Add(new Book("Война и мир", "Лев Толстой", 1869, 1225, "Роман"));
@@ -559,6 +567,52 @@ namespace PrakticeCSharp2
             musicLibrary.Add(new MusicAlbum("Abbey Road", "The Beatles", 1969, "The Beatles", 17));
             musicLibrary.Add(new MusicAlbum("Thriller", "Michael Jackson", 1982, "Michael Jackson", 9));
             musicLibrary.Add(new MusicAlbum("Dark Side of the Moon", "Pink Floyd", 1973, "Pink Floyd", 10));
+        }
+
+        public static void ExportData()
+        {
+            Console.Clear();
+            Console.WriteLine("ЭКСПОРТ ДАННЫХ");
+            Console.WriteLine("1. Экспортировать все книги");
+            Console.WriteLine("2. Экспортировать все фильмы");
+            Console.WriteLine("3. Экспортировать все альбомы");
+            Console.WriteLine("4. Экспортировать все медиа");
+            Console.WriteLine("0. Назад");
+            Console.Write("\nВыберите действие: ");
+
+            string choice = Console.ReadLine();
+            Console.WriteLine();
+
+            try
+            {
+                switch (choice)
+                {
+                    case "1":
+                        bookLibrary.ExportToFile($"books_export.json");
+                        break;
+                    case "2":
+                        movieLibrary.ExportToFile($"movies_export.json");
+                        break;
+                    case "3":
+                        musicLibrary.ExportToFile($"music_export.json");
+                        break;
+                    case "4":
+                        bookLibrary.ExportToFile($"all_books.txt");
+                        movieLibrary.ExportToFile($"all_movies.txt");
+                        musicLibrary.ExportToFile($"all_music.txt");
+                        Console.WriteLine("Все данные экспортированы");
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Неверный выбор!");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при экспорте: {ex.Message}");
+            }
         }
 
     }

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PrakticeCSharp2
 {
@@ -118,6 +121,36 @@ namespace PrakticeCSharp2
         public IEnumerable<T> GetUnavailableItems()
         {
             return _mediaList.Where(m => !m.IsAvailable);
+        }
+
+        public List<T> GetAllItems()
+        {
+            return _mediaList.ToList();
+        }
+
+
+        public void ExportToFile(string fileName)
+        {
+            var options = new FileStreamOptions
+            {
+                Mode = FileMode.OpenOrCreate,
+                Access = FileAccess.Write, 
+                Share = FileShare.Read,
+
+            };
+
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+            using var stream = new FileStream("data.txt", options);
+            using var writer = new StreamWriter(stream, Encoding.UTF8);
+
+            string json = JsonConvert.SerializeObject(_mediaDict, settings);
+            Console.WriteLine(json);
+
+            File.WriteAllText($"{fileName}.json", json);
         }
     }
 }
